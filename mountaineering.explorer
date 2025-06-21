@@ -1,0 +1,200 @@
+<?php
+session_start();
+if (!isset($_SESSION['visitor_count'])) {
+  $_SESSION['visitor_count'] = 1;
+} else {
+  $_SESSION['visitor_count']++;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mountaineering Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #f4f4f9;
+    }
+    header {
+      background: #004d40;
+      color: #fff;
+      padding: 1em;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    nav ul li {
+      margin: 0 1em;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      transition: 0.3s;
+      padding: 0.5em;
+    }
+    nav ul li a:hover,
+    nav ul li a.active {
+      background: #00796b;
+      border-radius: 5px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    .visitor-count {
+      font-size: 0.9em;
+    }
+    section {
+      padding: 2em;
+      display: none;
+    }
+    section.active {
+      display: block;
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #ticker {
+      position: fixed;
+      bottom: 0;
+      background: #004d40;
+      color: white;
+      width: 100%;
+      padding: 0.5em;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+    img.gallery {
+      width: 100%;
+      max-width: 300px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Logo">
+      <span>Mountaineering Explorer</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#" class="menu active" data-section="history">History</a></li>
+        <li><a href="#" class="menu" data-section="types">Types</a></li>
+        <li><a href="#" class="menu" data-section="techniques">Techniques</a></li>
+        <li><a href="#" class="menu" data-section="shelter">Sheltering</a></li>
+        <li><a href="#" class="menu" data-section="hazards">Hazards</a></li>
+        <li><a href="#" class="menu" data-section="records">Records</a></li>
+        <li><a href="#" class="menu" data-section="organizations">Organizations</a></li>
+        <li><a href="#" class="menu" data-section="gallery">Gallery</a></li>
+        <li><a href="#" class="menu" data-section="developments">Developments</a></li>
+        <li><a href="#" class="menu" data-section="guidelines">Guidelines</a></li>
+      </ul>
+    </nav>
+    <div class="visitor-count">
+      <span id="visitorCounter">Visitors: <?php echo $_SESSION['visitor_count']; ?></span>
+    </div>
+  </header>
+
+  <main>
+    <section id="history" class="active">
+      <h2>History of Mountaineering</h2>
+      <p>Mountaineering originated as a recreational activity in the 18th century...</p>
+    </section>
+    <section id="types">
+      <h2>Types and Styles</h2>
+      <p>There are different styles of mountaineering including alpine, expedition, and sport climbing...</p>
+    </section>
+    <section id="techniques">
+      <h2>Techniques</h2>
+      <p>Essential techniques include belaying, rappelling, ice climbing, and crevasse rescue...</p>
+    </section>
+    <section id="shelter">
+      <h2>Sheltering</h2>
+      <p>Mountaineers use tents, bivouacs, and snow caves depending on conditions...</p>
+    </section>
+    <section id="hazards">
+      <h2>Hazards</h2>
+      <p>Common hazards include avalanches, falls, altitude sickness, and weather exposure...</p>
+    </section>
+    <section id="records">
+      <h2>Records</h2>
+      <p>World records include fastest ascents, youngest climbers, and longest treks...</p>
+    </section>
+    <section id="organizations">
+      <h2>Organizations</h2>
+      <p>Global clubs like UIAA, Alpine Club, and others organize events and expeditions...</p>
+      <div id="map"></div>
+    </section>
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <img src="mountain1.jpg" alt="Mountain 1" class="gallery">
+      <img src="mountain2.jpg" alt="Mountain 2" class="gallery">
+      <iframe src="https://www.youtube.com/embed/Scxs7L0vhZ4" allowfullscreen></iframe>
+    </section>
+    <section id="developments">
+      <h2>Latest Developments</h2>
+      <p>Discover new gear, routes, and scientific research relevant to high altitude activity...</p>
+    </section>
+    <section id="guidelines">
+      <h2>General Guidelines</h2>
+      <p>Plan ahead, train properly, respect nature, and always climb responsibly...</p>
+    </section>
+  </main>
+
+  <div id="ticker"></div>
+
+  <script>
+    document.querySelectorAll('.menu').forEach(menu => {
+      menu.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.menu').forEach(m => m.classList.remove('active'));
+        menu.classList.add('active');
+        document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(menu.dataset.section).classList.add('active');
+      });
+    });
+
+    function updateTicker() {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        const now = new Date();
+        document.getElementById('ticker').textContent =
+          Date: ${now.toLocaleDateString()} Time: ${now.toLocaleTimeString()} Location: (${latitude.toFixed(2)}, ${longitude.toFixed(2)});
+      }, () => {
+        const now = new Date();
+        document.getElementById('ticker').textContent =
+          Date: ${now.toLocaleDateString()} Time: ${now.toLocaleTimeString()} Location: Unavailable;
+      });
+    }
+    setInterval(updateTicker, 1000);
+    updateTicker();
+  </script>
+</body>
+</html>
