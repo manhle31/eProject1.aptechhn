@@ -190,7 +190,7 @@ if (!isset($_SESSION['visitor_count'])) {
       }, () => {
         const now = new Date();
         document.getElementById('ticker').textContent =
-          Date: ${now.toLocaleDateString()} Time: ${now.toLocaleTimeString()} Location: Unavailable;
+          `Date: ${now.toLocaleDateString()} Time: ${now.toLocaleTimeString()} Location: Unavailable`;
       });
     }
     setInterval(updateTicker, 1000);
